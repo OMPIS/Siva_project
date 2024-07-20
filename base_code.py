@@ -50,8 +50,9 @@ if os_name == "Linux":
         print(f"OS name: {os_name}")
         print(f"Manufacture: {manufacture}")
         if product.startswith("PowerEdge"):
+            print(type(hwd_cmp[product]))
             print(f"{product}: {hwd_cmp[product]}")
-            DELL_iDRAC(product, {hwd_cmp[product]})
+            #DELL_iDRAC(product, {hwd_cmp[product]})
 
 # dell_enclouse_id = DELL_MEGACLI_ID("Enclosure Device ID")
 # dell_slot_id = DELL_MEGACLI_ID("Slot Number")

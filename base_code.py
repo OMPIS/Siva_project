@@ -1,5 +1,8 @@
 import os
 
+def remote_execution():
+
+
 def OS_validation():
     os_type = os.popen("uname -a").read().strip().split()[0]
     return os_type
@@ -35,6 +38,7 @@ def DELL_MEGACLI_ID(cmd):
 
 if os_name == "Linux":
     if "Dell" in manufacture:
+        DELL_iDRAC("PowerEdge R650", "7.00")
         DELL_iDRAC("PowerEdge R720xd", "2.65")
         DELL_iDRAC("PowerEdge R730xd", "2.80")
         DELL_iDRAC("PowerEdge R740xd", "7.00")

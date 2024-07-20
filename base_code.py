@@ -20,7 +20,7 @@ product = Hardware_details("'Product Name' | awk -F: '{print $2}'")
 
 def DELL_iDRAC(version, verion_req):
     idrack_version = os.popen("racadm getversion | grep iDRAC | awk -F= '{print $2}'").read().strip()
-    if idrack_version.__contains__(verion_req):
+    if idrack_version.startswith(verion_req):
         print(f"[OK] iDRAC version under the requirement: {version}: {idrack_version}")
     else:
         print(f"[CRITICAL] iDRAC not under the requirement: {version}: {idrack_version}")
@@ -50,9 +50,7 @@ if os_name == "Linux":
         print(f"OS name: {os_name}")
         print(f"Manufacture: {manufacture}")
         if product.startswith("PowerEdge"):
-            print(type(hwd_cmp[product]))
-            print(f"{product}: {hwd_cmp[product]}")
-            #DELL_iDRAC(product, {hwd_cmp[product]})
+            DELL_iDRAC(product, hwd_cmp[product])
 
 # dell_enclouse_id = DELL_MEGACLI_ID("Enclosure Device ID")
 # dell_slot_id = DELL_MEGACLI_ID("Slot Number")

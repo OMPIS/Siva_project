@@ -16,7 +16,7 @@ def Hardware_details(cmd):
 
 
 manufacture = Hardware_details("Manufacturer | awk -F: '{print $2}'")
-product = Hardware_details("Product Name | awk -F: '{print $2}'")
+product = Hardware_details("'Product Name' | awk -F: '{print $2}'")
 
 print(f"Manufacture: {manufacture}")
 print(f"product: {product}")
@@ -47,7 +47,7 @@ def DELL_MEGACLI_ID(cmd):
 #     "PowerEdge R730xd": "2.80",
 #     "PowerEdge R740xd": "7.00"
 # }
-# 
+#
 # if os_name == "Linux":
 #     if "Dell" in manufacture:
 #         if product.startswith("Power"):

@@ -25,7 +25,7 @@ def DELL_iDRAC(version, verion_req):
 def DELL_MEGACLI_ID(cmd):
     base_cmd_path = "/opt/MegaRAID/MegaCli/MegaCli64 -PDList -aALL"
     regex = "awk -F: '{print $2}'"
-    id_output = os.popen(f"{base_cmd_path} | grep {cmd} | {regex}")
+    id_output = os.popen(f"{base_cmd_path} | grep '{cmd}' | {regex}")
     unique_ids = list(set(id_output.split()))
     return unique_ids
 
@@ -48,8 +48,8 @@ hwd_cmp = {
 
 manufacture = Hardware_details("Manufacturer | awk -F: '{print $2}'")
 product = Hardware_details("'Product Name' | awk -F: '{print $2}'")
-dell_enclouse_ids = DELL_MEGACLI_ID("'Enclosure Device ID'")
-dell_slot_ids = DELL_MEGACLI_ID("'Slot Number'")
+dell_enclouse_ids = DELL_MEGACLI_ID("Enclosure Device ID")
+dell_slot_ids = DELL_MEGACLI_ID("Slot Number")
 print(f"Dell slot id: {dell_slot_ids}")
 print(f"Dell enclouse id: {dell_slot_ids}")
 
@@ -63,7 +63,3 @@ print(f"Dell enclouse id: {dell_slot_ids}")
 #                 for dell_slot_id in dell_slot_ids:
 #                     print(f"eid: {dell_enclouse_id}, sid: {dell_slot_id}")
 #                     DELL_MEGACLI_ERROR_CHECKS(dell_enclouse_id, dell_slot_id)
-
-
-
-

@@ -7,6 +7,7 @@ def OS_validation():
 
 
 os_name = OS_validation()
+print(f"os_name: {os_name}")
 
 
 def Hardware_details(cmd):
@@ -19,6 +20,7 @@ product = Hardware_details("Product Name | awk -F: '{print $2}'")
 
 print(f"Manufacture: {manufacture}")
 print(f"product: {product}")
+
 
 def DELL_iDRAC(version, verion_req):
     idrack_version = os.popen("racadm getversion | grep iDRAC | awk -F= '{print $2}'").read().strip()
@@ -35,24 +37,23 @@ def DELL_MEGACLI_ID(cmd):
     unique_ids = list(set(id_output.split()))
     return unique_ids
 
-
 # DELL_iDRAC("PowerEdge R650", "7.00")
 # DELL_iDRAC("PowerEdge R720xd", "2.65")
 # DELL_iDRAC("PowerEdge R730xd", "2.80")
 # DELL_iDRAC("PowerEdge R740xd", "7.00")
-hwd_cmp = {
-    "PowerEdge R650": "7.00",
-    "PowerEdge R720xd": "2.65",
-    "PowerEdge R730xd": "2.80",
-    "PowerEdge R740xd": "7.00"
-}
+# hwd_cmp = {
+#     "PowerEdge R650": "7.00",
+#     "PowerEdge R720xd": "2.65",
+#     "PowerEdge R730xd": "2.80",
+#     "PowerEdge R740xd": "7.00"
+# }
+# 
+# if os_name == "Linux":
+#     if "Dell" in manufacture:
+#         if product.startswith("Power"):
+#             print(f"{product}: {hwd_cmp[product]}")
 
-if os_name == "Linux":
-    if "Dell" in manufacture:
-        if product.startswith("Power"):
-            print(f"{product}: {hwd_cmp[product]}")
-            
-        # dell_enclouse_id = DELL_MEGACLI_ID("Enclosure Device ID")
-        # dell_slot_id = DELL_MEGACLI_ID("Slot Number")
-        # print(f"Dell slot id: {dell_slot_id}")
-        # print(f"Dell enclouse id: {dell_slot_id}")
+# dell_enclouse_id = DELL_MEGACLI_ID("Enclosure Device ID")
+# dell_slot_id = DELL_MEGACLI_ID("Slot Number")
+# print(f"Dell slot id: {dell_slot_id}")
+# print(f"Dell enclouse id: {dell_slot_id}")

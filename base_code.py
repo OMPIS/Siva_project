@@ -33,6 +33,7 @@ def DELL_MEGACLI_ID(cmd):
     unique_ids = list(set(id_output.split()))
     return unique_ids
 
+
 # DELL_iDRAC("PowerEdge R650", "7.00")
 # DELL_iDRAC("PowerEdge R720xd", "2.65")
 # DELL_iDRAC("PowerEdge R730xd", "2.80")
@@ -46,9 +47,11 @@ hwd_cmp = {
 
 if os_name == "Linux":
     if "Dell" in manufacture:
+        print(f"OS name: {os_name}")
         print(f"Manufacture: {manufacture}")
-        if product.startswith("Power"):
+        if product.startswith("PowerEdge"):
             print(f"{product}: {hwd_cmp[product]}")
+            DELL_iDRAC(product, {hwd_cmp[product]})
 
 # dell_enclouse_id = DELL_MEGACLI_ID("Enclosure Device ID")
 # dell_slot_id = DELL_MEGACLI_ID("Slot Number")

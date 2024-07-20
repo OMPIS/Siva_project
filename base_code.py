@@ -20,7 +20,7 @@ product = Hardware_details("'Product Name' | awk -F: '{print $2}'")
 
 def DELL_iDRAC(version, verion_req):
     idrack_version = os.popen("racadm getversion | grep iDRAC | awk -F= '{print $2}'").read().strip()
-    if idrack_version.startswith(verion_req):
+    if idrack_version.__contains__(verion_req):
         print(f"[OK] iDRAC version under the requirement: {version}: {idrack_version}")
     else:
         print(f"[CRITICAL] iDRAC not under the requirement: {version}: {idrack_version}")

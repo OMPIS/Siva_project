@@ -35,7 +35,7 @@ def DELL_MEGACLI_ERROR_CHECKS(eid, slotid):
     for error_count in error_counts:
         validation = os.popen(f"{base_cmd_path} | grep '{error_count}' | {regex}").read().strip()
         print(validation)
-    
+
 
 
 #Basic Varibles
@@ -48,19 +48,22 @@ hwd_cmp = {
 
 manufacture = Hardware_details("Manufacturer | awk -F: '{print $2}'")
 product = Hardware_details("'Product Name' | awk -F: '{print $2}'")
-dell_enclouse_ids = DELL_MEGACLI_ID("Enclosure Device ID")
-dell_slot_ids = DELL_MEGACLI_ID("Slot Number")
+dell_enclouse_ids = DELL_MEGACLI_ID("'Enclosure Device ID'")
+dell_slot_ids = DELL_MEGACLI_ID("'Slot Number'")
 print(f"Dell slot id: {dell_slot_ids}")
 print(f"Dell enclouse id: {dell_slot_ids}")
 
-if os_name == "Linux":
-    if "Dell" in manufacture:
-        print(f"OS name: {os_name}")
-        print(f"Manufacture: {manufacture}")
-        if product.startswith("PowerEdge"):
-            DELL_iDRAC(product, hwd_cmp[product])
-            for dell_enclouse_id in dell_enclouse_ids:
-                for dell_slot_id in dell_slot_ids:
-                    print(f"eid: {dell_enclouse_id}, sid: {dell_slot_id}")
-                    DELL_MEGACLI_ERROR_CHECKS(dell_enclouse_id, dell_slot_id)
-                    
+# if os_name == "Linux":
+#     if "Dell" in manufacture:
+#         print(f"OS name: {os_name}")
+#         print(f"Manufacture: {manufacture}")
+#         if product.startswith("PowerEdge"):
+#             DELL_iDRAC(product, hwd_cmp[product])
+#             for dell_enclouse_id in dell_enclouse_ids:
+#                 for dell_slot_id in dell_slot_ids:
+#                     print(f"eid: {dell_enclouse_id}, sid: {dell_slot_id}")
+#                     DELL_MEGACLI_ERROR_CHECKS(dell_enclouse_id, dell_slot_id)
+
+
+
+

@@ -2,3 +2,17 @@ This project is related to automate the disk hardware checks
 
 
 gg
+
+curl -O -x  "http://webproxy.pln.mgmt.services:80" "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+
+c385jyb  +Test Dell -omreport chassis memory |grep Index
+
+ git config --global http.proxy http://webproxy.pln.mgmt.services:8080    -->>configure git local-hub
+ git clone https://github.com/OMPIS/Siva_project.git  
+git pull 
+
+
+
+
+
+

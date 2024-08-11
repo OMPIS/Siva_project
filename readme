@@ -11,7 +11,7 @@ c385jyb  + lo5s-ndaabin01   Test Dell -omreport chassis memory |grep Index
  git clone https://github.com/OMPIS/Siva_project.git  
 git pull 
 
-#Memeory checks function still needs to be test .
+#Memeory ,  controller ,  cpu  function still needs to be test .
 
 Join the meeting now
 Meeting ID: 389 286 831 114

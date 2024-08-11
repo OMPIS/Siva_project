@@ -1,0 +1,1250 @@
+--------------------------------------------------------------------------------------------------------------------------
+Last login: Sat Jun 15 08:37:46 2024
+c103peuzphd23:~ # uname  -a
+Linux c103peuzphd23 3.10.0-1160.114.2.el7.x86_64 #1 SMP Sun Mar 3 08:18:39 EST 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+dmidecode -t1|grep -i manu
+        Manufacturer: Dell Inc.
+
+Handle 0x0100, DMI type 1, 27 bytes
+System Information
+        Manufacturer: Dell Inc.
+        Product Name: PowerEdge R720xd 
+        Version: Not Specified
+        Serial Number: 1RFHN22
+        UUID: 4c4c4544-0052-4610-8048-b1c04f4e3232
+        Wake-up Type: Power Switch
+        SKU Number: SKU=NotProvided;ModelName=PowerEdge R720xd
+        Family: Not Specified
+
+
+c103peuzphd23:~ # racadm getversion #Hardware check
+ Bios Version                     = 2.2.2
+
+ iDRAC Version                    = 2.65.65.65      ---2.X firware latest below 2 recomended to upgraded
+
+ Lifecycle Controller Version     = 2.65.65.65
+
+ IDSDM Version                    = NA
+
+if R720xd ->iDRAC more than 2.65 or equal to
+if R730xd -> iDRAC more than 2.80 or equal to
+if R740xd -> iDRAC more than 7.00 or equal to
+
+
+To get the slot numbers
+MegaCli64 -PDList -aALL | grep -i "Enclosure Device ID" | awk -F: '{print $2}' -> To get the enclosure
+MegaCli64 -PDList -aALL | grep -i "Slot Number" | awk -F: '{print $2}' -> To get the slot numbers -> get unique values 
+output Slot Number: 0
+
+-> To get the slot id
+
+c103peuzphd23:~ #  /opt/MegaRAID/MegaCli/MegaCli64 -PDList -aALL               _======>command check all disk configurations
+MegaCli64 -PDInfo -PhysDrv[32:1] -aALL
+
+Adapter #0
+
+Enclosure Device ID: 32
+Slot Number: 0
+Drive's position: DiskGroup: 1, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 0
+WWN: 5001E8200278F755
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e8200278f756
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641482068    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 1
+Drive's position: DiskGroup: 2, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 1
+WWN: 5001E8200278F7FD
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e8200278f7fe
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641482236    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 2
+Drive's position: DiskGroup: 3, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 2
+WWN: 5001E82002788FB5
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e82002788fb6
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641455540    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :30C (86.00 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 3
+Drive's position: DiskGroup: 4, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 3
+WWN: 5001E8200278F3E1
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e8200278f3e2
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641481184    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 4
+Drive's position: DiskGroup: 5, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 4
+WWN: 5001E82002789011
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e82002789012
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641455632    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 5
+Drive's position: DiskGroup: 6, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 5
+WWN: 5001E82002793609
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e8200279360a
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641498120    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 6
+Drive's position: DiskGroup: 7, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 6
+WWN: 5001E820027891F5
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e820027891f6
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641456116    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 7
+Drive's position: DiskGroup: 8, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 7
+WWN: 5001E82002789365
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e82002789366
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641456484    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :26C (78.80 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 8
+Drive's position: DiskGroup: 9, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 8
+WWN: 5001E820027623C5
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D323
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e820027623c6
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32341296836    tag/T3BQ
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 9
+Drive's position: DiskGroup: 10, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 9
+WWN: 5001E8200278EBF5
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 372.611 GB [0x2e9390b0 Sectors]
+Non Coerced Size: 372.111 GB [0x2e8390b0 Sectors]
+Coerced Size: 372.0 GB [0x2e800000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: D326
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5001e8200278ebf6
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: Pliant  LB406M          D32641479156    tag/T3C3
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Solid State Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 12
+Drive's position: DiskGroup: 0, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 12
+WWN: 50000395A82A0FC0
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 279.396 GB [0x22ecb25c Sectors]
+Non Coerced Size: 278.896 GB [0x22dcb25c Sectors]
+Coerced Size: 278.875 GB [0x22dc0000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: DE0C
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x50000395a82a0fc2
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: TOSHIBA AL13SEB300      DE0C74N0A02OFRD6
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Hard Disk Device
+Drive Temperature :33C (91.40 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 13
+Drive's position: DiskGroup: 0, Span: 0, Arm: 1
+Enclosure position: 1
+Device Id: 13
+WWN: 50000395A82AB1E0
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 279.396 GB [0x22ecb25c Sectors]
+Non Coerced Size: 278.896 GB [0x22dcb25c Sectors]
+Coerced Size: 278.875 GB [0x22dc0000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: DE0C
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x50000395a82ab1e2
+SAS Address(1): 0x0
+Connected Port Number: 0(path0)
+Inquiry Data: TOSHIBA AL13SEB300      DE0C74O0A02CFRD6
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Hard Disk Device
+Drive Temperature :33C (91.40 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown
+Drive has flagged a S.M.A.R.T alert : No
+
+For reference --not to use 
+c103peuzphd23:~ #  /opt/MegaRAID/MegaCli/MegaCli64 -PDList -aALL | egrep "Firmware state|Slot|Error"   ----based on media and other error confirm disk failed
+
+
+-===>  share the complete disk configration in notes or capture output on screen 
+Slot Number: 0
+Media Error Count: 0
+Other Error Count: 1                            --------failed
+Firmware state: Online, Spun Up
+Slot Number: 1
+Media Error Count: 0
+Other Error Count: 1                                   --------failed 
+Firmware state: Online, Spun Up
+Slot Number: 2
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 3
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 4
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 5
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 6
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 7
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 8
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 9
+Media Error Count: 0
+Other Error Count: 1
+Firmware state: Online, Spun Up
+Slot Number: 12
+Media Error Count: 0
+Other Error Count: 0
+Firmware state: Online, Spun Up
+Slot Number: 13
+Media Error Count: 0
+Other Error Count: 0
+Firmware state: Online, Spun Up
+
+
+Exit Code: 0x00
+c103peuzphd23:~ # racadm getniccfg
+
+IPv4 settings:
+NIC Enabled          = 1
+IPv4 Enabled         = 1
+DHCP Enabled         = 0
+IP Address           = 10.59.177.195
+Subnet Mask          = 255.255.254.0
+Gateway              = 10.59.177.254
+
+IPv6 settings:
+IPv6 Enabled               = 0
+DHCP6 Enabled              = 1
+IP Address 1               = ::
+Gateway                    = ::
+Link Local Address         = ::
+IP Address 2               = ::
+IP Address 3               = ::
+IP Address 4               = ::
+IP Address 5               = ::
+IP Address 6               = ::
+IP Address 7               = ::
+IP Address 8               = ::
+IP Address 9               = ::
+IP Address 10              = ::
+IP Address 11              = ::
+IP Address 12              = ::
+IP Address 13              = ::
+IP Address 14              = ::
+IP Address 15              = ::
+
+LOM Status:
+NIC Selection   = dedicated
+Link Detected   = Yes
+Speed           = 100Mb/s
+Duplex Mode     = Full Duplex
+Active NIC      = Dedicated
+
+Static IPv4 settings:
+Static IP Address    = 10.59.177.195          ---ILO ip of server 
+Static Subnet Mask   = 255.255.254.0
+Static Gateway       = 10.59.177.254
+
+Static IPv6 settings:
+Static IP Address 1        = ::
+Static Prefix Length       = 64
+Static Gateway             = ::
+
+c103peuzphd23:~ # omreport storage controller
+ Controller  PERC H710P Mini(Embedded)
+
+Controller
+ID                                            : 0
+Status                                        : Non-Critical
+Name                                          : PERC H710P Mini
+Slot ID                                       : Embedded
+State                                         : Degraded                                   ====controller  error 
+Firmware Version                              : 21.2.0-0007
+Minimum Required Firmware Version             : 21.3.2-0005
+Driver Version                                : 07.714.04.00-rh1
+Minimum Required Driver Version               : Not Applicable
+Storport Driver Version                       : Not Applicable
+Minimum Required Storport Driver Version      : Not Applicable
+Number of Connectors                          : 2
+Rebuild Rate                                  : 30%
+BGI Rate                                      : 30%
+Check Consistency Rate                        : 30%
+Reconstruct Rate                              : 30%
+Alarm State                                   : Not Applicable
+Cluster Mode                                  : Not Applicable
+SCSI Initiator ID                             : Not Applicable
+Cache Memory Size                             : 1024 MB
+Patrol Read Mode                              : Auto
+Patrol Read State                             : Stopped
+Patrol Read Rate                              : 30%
+Patrol Read Iterations                        : 506
+Abort Check Consistency on Error              : Disabled
+Allow Revertible Hot Spare and Replace Member : Enabled
+Load Balance                                  : Not Applicable
+Auto Replace Member on Predictive Failure     : Disabled
+Redundant Path view                           : Not Applicable
+CacheCade Capable                             : Yes
+Persistent Hot Spare                          : Disabled
+Encryption Capable                            : Yes
+Encryption Key Present                        : No
+Encryption Mode                               : None
+Preserved Cache                               : Not Applicable
+Spin Down Unconfigured Drives                 : Disabled
+Spin Down Hot Spares                          : Disabled
+Spin Down Configured Drives                   : Disabled
+Automatic Disk Power Saving (Idle C)          : Disabled
+Start Time (HH:MM)                            : Not Applicable
+Time Interval for Spin Up (in Hours)          : Not Applicable
+T10 Protection Information Capable            : No
+Non-RAID HDD Disk Cache Policy                : Not Applicable
+
+c103peuzphd23:~ # omreport storage memory                       _Check memory status
+Error! Invalid command: memory
+
+c103peuzphd23:~ # omreport chassis memory
+Memory Information
+
+Health : Ok
+
+Attributes of Memory Array  1
+Location           : System Board or Motherboard
+Use                : System Memory
+Installed Capacity : 262144  MB
+Maximum Capacity   : 1572864  MB
+Slots Available    : 24
+Slots Used         : 16
+Error Correction   : Multibit ECC
+
+Total of Memory Array(s)
+Total Installed Capacity                     : 262144  MB
+Total Installed Capacity Available to the OS : 257738  MB
+Total Maximum Capacity                       : 1572864  MB
+
+Details of Memory Array 1
+Index          : 0
+Status         : Ok
+Connector Name : DIMM_A1
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 1
+Status         : Ok
+Connector Name : DIMM_A2
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 2
+Status         : Ok
+Connector Name : DIMM_A3
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 3
+Status         : Ok
+Connector Name : DIMM_A4
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 4
+Status         : Ok
+Connector Name : DIMM_A5
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 5
+Status         : Ok
+Connector Name : DIMM_A6
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 6
+Status         : Ok
+Connector Name : DIMM_A7
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 7
+Status         : Ok
+Connector Name : DIMM_A8
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_A9
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_A10
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_A11
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_A12
+Type           : [Not Occupied]
+Size           :
+
+Index          : 8
+Status         : Ok
+Connector Name : DIMM_B1
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 9
+Status         : Ok
+Connector Name : DIMM_B2
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 10
+Status         : Ok
+Connector Name : DIMM_B3
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 11
+Status         : Ok
+Connector Name : DIMM_B4
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 12
+Status         : Ok
+Connector Name : DIMM_B5
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 13
+Status         : Ok
+Connector Name : DIMM_B6
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 14
+Status         : Ok
+Connector Name : DIMM_B7
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 15
+Status         : Ok
+Connector Name : DIMM_B8
+Type           : DDR3 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_B9
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_B10
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_B11
+Type           : [Not Occupied]
+Size           :
+
+Index          :
+Status         : Unknown
+Connector Name : DIMM_B12
+Type           : [Not Occupied]
+Size           :
+
+personal information is processed by the System Owner.
+
+
+c93zmb9:~ # omreport chassis memory                                        --Command to check memory status 
+Memory Information
+
+Health : Critical
+
+Attributes of Memory Array  1
+Location           : System Board or Motherboard
+Use                : System Memory
+Installed Capacity : 393216  MB
+Maximum Capacity   : 3145728  MB
+Slots Available    : 24
+Slots Used         : 24
+Error Correction   : Multibit ECC
+
+Total of Memory Array(s)
+Total Installed Capacity                     : 393216  MB
+Total Installed Capacity Available to the OS : 386709  MB
+Total Maximum Capacity                       : 3145728  MB
+
+Details of Memory Array 1
+Index          : 0
+Status         : Non-Critical                                          ==========memory Error 
+Connector Name : A1
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 1                                                    =======    >Normal 
+Status         : Ok
+Connector Name : A2
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 2
+Status         : Ok
+Connector Name : A3
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 3
+Status         : Ok
+Connector Name : A4
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 4
+Status         : Ok
+Connector Name : A5
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 5
+Status         : 
+Connector Name : A6
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 6
+Status         : Ok
+Connector Name : A7
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 7
+Status         : Ok
+Connector Name : A8
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 8
+Status         : Critical                                                     ==== ---->-error 
+Connector Name : A9
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 9
+Status         : Ok
+Connector Name : A10
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 10
+Status         : Ok
+Connector Name : A11
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 11
+Status         : Ok
+Connector Name : A12
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 12
+Status         : Critical
+Connector Name : B1
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 13
+Status         : Ok
+Connector Name : B2
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 14
+Status         : Ok
+Connector Name : B3
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 15
+Status         : Ok
+Connector Name : B4
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 16
+Status         : Ok
+Connector Name : B5
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 17
+Status         : Ok
+Connector Name : B6
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 18
+Status         : Ok
+Connector Name : B7
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 19
+Status         : Ok
+Connector Name : B8
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 20
+Status         : Ok
+Connector Name : B9
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 21
+Status         : Ok
+Connector Name : B10
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 22
+Status         : Ok
+Connector Name : B11
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+Index          : 23
+Status         : Ok
+Connector Name : B12
+Type           : DDR4 - Synchronous Registered (Buffered)
+Size           : 16384  MB
+
+c93zmb9:~ # omreport storage controller
+ Controller  PERC H730P Mini(Embedded)
+
+Controller
+ID                                            : 0
+Status                                        : Ok
+Name                                          : PERC H730P Mini
+Slot ID                                       : Embedded  
+State                                         : Ready                                        --==good state
+Firmware Version                              : 25.5.3.0005
+Minimum Required Firmware Version             : Not Applicable
+Driver Version                                : 07.714.04.00-rh1
+Minimum Required Driver Version               : Not Applicable
+Storport Driver Version                       : Not Applicable
+Minimum Required Storport Driver Version      : Not Applicable
+Number of Connectors                          : 1
+Rebuild Rate                                  : 30%
+BGI Rate                                      : 30%
+Check Consistency Rate                        : 30%
+Reconstruct Rate                              : 30%
+Alarm State                                   : Not Applicable
+Cluster Mode                                  : Not Applicable
+SCSI Initiator ID                             : Not Applicable
+Cache Memory Size                             : 2048 MB
+Patrol Read Mode                              : Auto
+Patrol Read State                             : Active
+Patrol Read Rate                              : 30%
+Patrol Read Iterations                        : 317
+Abort Check Consistency on Error              : Disabled
+Allow Revertible Hot Spare and Replace Member : Enabled
+Load Balance                                  : Not Applicable
+Auto Replace Member on Predictive Failure     : Disabled
+Redundant Path view                           : Not Applicable
+CacheCade Capable                             : Not Applicable
+Persistent Hot Spare                          : Disabled
+Encryption Capable                            : Yes
+Encryption Key Present                        : No
+Encryption Mode                               : None
+Preserved Cache                               : Not Applicable
+Spin Down Unconfigured Drives                 : Disabled
+Spin Down Hot Spares                          : Disabled
+Spin Down Configured Drives                   : Disabled
+Automatic Disk Power Saving (Idle C)          : Disabled
+Start Time (HH:MM)                            : Not Applicable
+Time Interval for Spin Up (in Hours)          : Not Applicable
+T10 Protection Information Capable            : No
+Non-RAID HDD Disk Cache Policy                : Unchanged
+Current Controller Mode                       : RAID
+
+c93zmb9:~ # logout
+
+
+HP server ''\\
+
+
+
+
+============================================================================================================
+Connection to c93zmb9 closed.
+<au6088038@plnburger(c542anp):~> sshr  c767esxppdb02
+############################################################################
+#                                                                          #
+# Thomson Reuters System Login (C) 2011 Thomson Reuters                    #
+#                                                                          #
+# This is a Thomson Reuters proprietary system. No use is allowed without  #
+# proper authorization. Unauthorized use of this computer or network       #
+# resources may constitute a breach of Thomson Reuters policy and be       #
+# liable to prosecution under relevant legislation.  Your use of Thomson   #
+# Reuters electronic communication facilities is permitted only in         #
+# accordance with company policies, is not private and is subject to       #
+# auditing / monitoring at any time.                                       #
+#                                                                          #
+############################################################################
+Last login: Sun Mar 10 01:47:57 2024 from c542anp.int.thomsonreuters.com
+c767esxppdb02:~ # 
+c767esxppdb02:~ # /usr/sbin/hpacucli ctrl all show config                          ===>one method to check disk status 
+
+Smart Array P220i in Slot 0 (Embedded)    (sn: PCQVU0CRH7F3CU)
+
+   array A (SAS, Unused Space: 0  MB)
+
+
+      logicaldrive 1 (558.9 GB, RAID 1, OK)
+
+      physicaldrive 1I:1:1 (port 1I:box 1:bay 1, SAS, 600 GB, Failed)              ===error
+      physicaldrive 1I:1:2 (port 1I:box 1:bay 2, SAS, 600 GB, OK)
+
+   SEP (Vendor ID PMCSIERA, Model SRCv4x6G) 380 (WWID: 50014380327C173F)
+
+
+
+Smart Array P840ar in Slot 0 (Embedded)   (sn: PDNLL0CRHAT02T)
+
+
+
+c767esxppdb02:~ # /usr/sbin/hpssacli   ctrl all show config                =====>second method incase above command not exist/use this
+
+Smart Array P220i in Slot 0 (Embedded)    (sn: PCQVU0CRH7F3CU)
+
+   array A (SAS, Unused Space: 0  MB)
+
+
+      logicaldrive 1 (558.9 GB, RAID 1, OK)
+
+      physicaldrive 1I:1:1 (port 1I:box 1:bay 1, SAS, 600 GB, OK)
+      physicaldrive 1I:1:2 (port 1I:box 1:bay 2, SAS, 600 GB, OK)
+
+   SEP (Vendor ID PMCSIERA, Model SRCv4x6G) 380 (WWID: 50014380327C173F)
+
+
+   Port Name: 1I
+
+   Internal Drive Cage at Port 1I, Box 1, OK
+   array A (SAS, Unused Space: 0  MB)
+
+
+      logicaldrive 1 (1.6 TB, RAID 1, Interim Recovery Mode)
+
+
+c767esxppdb02:~ # /usr/sbin/hpacucli ctrl all show status                              ===> One method get Controller status 
+
+Smart Array P220i in Slot 0 (Embedded)
+   Controller Status: OK
+   Cache Status: OK
+   Battery/Capacitor Status: OK
+
+
+c767esxppdb02:~ #  /usr/sbin/hpssacli ctrl all show status                          =====>Second  method get Controller status
+
+Smart Array P220i in Slot 0 (Embedded)
+   Controller Status: OK
+   Cache Status: OK
+   Battery/Capacitor Status: OK
+
+
+/usr/sbin/hpacucli ctrl all show status                                          
+
+Smart Array P220i in Slot 0 (Embedded)
+   Controller Status: Degraded                                            -error 
+   Cache Status: OK
+   Battery/Capacitor Status: OK
+
+
+

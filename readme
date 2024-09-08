@@ -11,7 +11,40 @@ c385jyb  + lo5s-ndaabin01   Test Dell -omreport chassis memory |grep Index
  git clone https://github.com/OMPIS/Siva_project.git  
 git pull 
 
+
+
 #Memeory ,  controller ,  cpu  function still needs to be test .
+
+Code for BIOS , Firmware has to write (
+
+
+Explanatiom
+
+OS module used for Linux command excute. 
+
+verified the command 
+
+ then 
+used paramico   .. remote command  
+
+re - regress  
+
+argparse -- agrument 
+
+sys --check sytax 
+
+
+
+Session function : 
+
+remote comand 
+
+OS validation
+
+
+
+
+
 
 Join the meeting now
 Meeting ID: 389 286 831 114

@@ -75,7 +75,7 @@ def DELL_MEGACLI_ERROR_CHECKS(eid, slotid):  # This
         validations = [Session(main_cmd)]
         for validation in validations:
             if validation == '0':
-                #print(f"[OK] No issues on the {error_count}; Enclouser ID: {eid}; SlotID: {slotid}")
+                print(f"[OK] No issues on the {error_count}; Enclouser ID: {eid}; SlotID: {slotid}")
                 pass
             else:
                 print(f"[CRITCICAL] Disk having {error_count}; Enclouser ID: {eid}; SlotID: {slotid}")
@@ -83,6 +83,8 @@ def DELL_MEGACLI_ERROR_CHECKS(eid, slotid):  # This
                 # hardware_issues = os.popen(f"{base_cmd_path}").read().strip()
                 hardware_issues = Session(cmd)
                 print(hardware_issues)
+    #if all(validation == '0' for validation in validations): print(f"[OK] All Disk slots are working fine")
+
 
 def DELL_MEMORY_CHECKS(component):
     if component is 'memory':
@@ -105,9 +107,11 @@ def DELL_MEMORY_CHECKS(component):
                 print(f"[CRITICAL] {component} Fault Detected for {grep_char2}: {unique_id}")
                 #fault_id = os.popen(f"{final_check}").read().strip()
                 fault_id = Session(final_check)
+                print(fault_id)
             else:
+                print(f"[Ok] {component} Working fine {grep_char2}: {unique_id}")
                 pass
-    if all(index == "Ok" for index in index_output): print(f"[OK] All {component} slots are working fine.")
+    #if all(index == "Ok" for index in index_output): print(f"[OK] All {component} slots are working fine.")
 
 
 # Basic Varibles
@@ -115,7 +119,8 @@ hwd_cmp = {
     "PowerEdge R650": "7.00",
     "PowerEdge R720xd": "2.65",
     "PowerEdge R730xd": "2.80",
-    "PowerEdge R740xd": "7.00"
+    "PowerEdge R740xd": "7.00",
+    "PowerEdge R750": "2.80"
 }
 
 manufacture = Hardware_details("Manufacturer")
@@ -138,7 +143,6 @@ def Main(os_type, manufacture, product):
                 for dell_enclouse_id in dell_enclouse_ids:
                     for dell_slot_id in dell_slot_ids:
                         hardware_ouput = DELL_MEGACLI_ERROR_CHECKS(dell_enclouse_id, dell_slot_id)
-                if all(validation == '0' for validation in validations): print(f"[OK] All Disk slots are working fine")
 
 Main("Linux", "Dell", "PowerEdge")
 DELL_MEMORY_CHECKS("memory")

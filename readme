@@ -53,4 +53,476 @@ Passcode: bHLLC7
 
 
 
+============================================================================================
+
+ add_temproot_user.sh
+#!/usr/bin/env bash
+
+# SCRIPT_AUTHOR=Anton Takareuski
+# NOTE: Modified / improved from add_temproot_user.sh by Vang Pha
+
+# SCRIPT_DESCRIPTION=Script sets up temproot user for a period of time specified.
+# SCRIPT_DATE=20160523
+# SCRIPT_UpDATE=20170809
+# SCRIPT_LANGUAGE=bash 2.0
+# SCRIPT_PLATFORM=linux,solaris,aix
+# SCRIPT_VERSION=4
+
+# Date: 2016.05.23
+# - Included older RHEL/OEL handling
+# - Fixed AIX 7 issue (useradd only accepts group name with -g)
+# - Added defined password handling for AIX and SOLARIS
+# Date: 2016.05.25
+# - Improved sudo pkg check on solaris / removed SFWsudo spark pkg install
+# - Added basedir(homedir) check
+# - Removed dependency on other scripts and /tools/infra/ NAS
+# - Cleaned up output
+# Date: 2017.08.09 - Justin Singer
+# - Fixed sudoers file permissions issue
+# Date: 2018.04.24 - Ben Shumway
+# - Fixed sudo package check on AIX
+
+USERID='67396'
+USER='temproot'
+GRPID='100'
+DESC='Temp Root User'
+HOME_DIR="/home/$USER"
+
+SUDOERS_LINE="temproot        ALL=(ALL) NOPASSWD:ALL"
+SUDOERS_FILE=""
+PASS=""
+
+#Colored output
+function print_green() {
+  echo -e "\033[32m$1\033[0m"
+}
+
+function print_red() {
+  echo -e "\033[31m$1\033[0m"
+}
+
+function print_info() {
+  echo -e "\033[36m$1\033[0m"
+}
+
+function logger_entry() {
+  action="$1"
+
+  if [ "$(uname)" == "Linux" ]; then
+    logger "$USER user $action"
+    #LOGGER_CMD='logger "$USER user $action"'
+  elif [ "$(uname)" == "SunOS" ]; then
+    logger -p user.alert "$USER user $action"
+    #LOGGER_CMD='logger -p user.alert "$USER user $action"'
+  elif [ "$(uname)" == "AIX" ]; then
+    logger -p user.info "$USER user $action"
+    #LOGGER_CMD='logger -p user.info "$USER user $action"'
+  else
+    echo "Unsupported OS: $(uname -a)"
+    exit 1
+  fi
+}
+
+function pass_gen() {
+
+  if [ "$(uname)" == "Linux" ]; then
+    if [ -z $PASS ]; then
+      TMPR_PASS=`tr -cd '[:graph:]' < /dev/urandom | fold -w12 | head -1 |tr '|' '$' |tr '(' 'd' | tr ')' 'f'`
+    else
+      TMPR_PASS=$PASS
+    fi
+
+    if ! (cp -p /etc/shadow /etc/shadow.$(date +%Y%m%d)); then
+      print_red "Failed to back up /etc/shadow"
+      exit 1
+    else
+      if [ "$(grep -s -i version /etc/SuSE-release)" == "VERSION = 9" ]; then
+        PASS_CMD='echo "$USER:$TMPR_PASS" | chpasswd'
+      else
+        PASS_CMD='echo $TMPR_PASS | passwd $USER --stdin'
+      fi
+
+      if ! (eval $PASS_CMD &>/dev/null); then
+        print_red "Failed to set $USER password. Try manually..."
+      else
+        print_green "$USER PASSWORD: $TMPR_PASS is valid for $DAYS day(s) on $(hostname)"
+      fi
+    fi
+
+  elif [ "$(uname)" == "SunOS" ]; then
+    if [ -z $PASS ]; then
+      SRAND="$RANDOM`date +%S`$RANDOM"
+      TMPR_PASS=`echo $SRAND | digest -v -a md5 | cut -d" " -f 2 | cut -c 1-10`
+    else
+      TMPR_PASS=$PASS
+    fi
+
+    SHASH=`perl -e "print crypt(\"${TMPR_PASS}\", \"salt\"),\"\n\""`
+
+    if ! (cp -p /etc/shadow /etc/shadow.$(date +%Y%m%d)); then
+      print_red "Failed to back up /etc/shadow"
+      exit 1
+    else
+      sed /^$USER/d /etc/shadow > /etc/shadow.tmp && mv /etc/shadow.tmp /etc/shadow
+      if ! (echo "${USER}:${SHASH}:::::::" >> /etc/shadow); then
+        print_red "Failed to set $USER password"
+      else
+        print_green "$USER PASSWORD: $TMPR_PASS is valid for ${DAYS} day(s) on $(hostname)"
+      fi
+    fi
+
+  elif [ "$(uname)" == "AIX" ]; then
+    if [ -z $PASS ]; then
+      ARAND="$RANDOM$(date +%s)$RANDOM"
+      TMPR_PASS=`echo $ARAND | csum -h MD5 - | cut -d " " -f 1 | cut -c 1-10`
+    else
+      TMPR_PASS=$PASS
+    fi
+
+    if ! (cp -p /etc/security/passwd /etc/security/passwd.$(date +%Y%m%d)); then
+        print_red "Failed to back up /etc/security/passwd"
+        exit 1
+    else
+      if ! (echo "$USER:$TMPR_PASS" | chpasswd); then
+        print_red "Failed to set $USER password"
+      else
+        pwdadm -c $USER
+        print_green "$USER PASSWORD: $TMPR_PASS is valid for ${DAYS} day(s) on $(hostname)"
+      fi
+    fi
+
+  else
+    print_red "Unsupported OS: $(uname -a)"
+  fi
+}
+
+function print_usage() {
+print_info """### USAGE ###
+   1. ssh $USER@$(hostname)
+   2. sudo su"""
+}
+
+function add_temproot() {
+  #ADD USER
+  if [ "$(uname)" == "Linux" ]; then
+    print_info "$(uname) FOUND! Adding $USER..."
+    HOME_DIR="$(useradd -D | grep HOME | cut -d'=' -f2)/$USER"
+
+    if (useradd -m -d $HOME_DIR -g $GRPID -u $USERID -s /bin/bash -c "$DESC" $USER); then
+      pass_gen
+    else
+      print_red "Faild to add $USER"
+      exit 1
+    fi
+
+  elif [ "$(uname)" == "SunOS" ]; then
+    print_info "$(uname -sr) FOUND! Adding User..."
+    my_base_dir="$(useradd -D | tr ' ' '\n' | grep basedir | cut -d'=' -f2)"
+
+    if ! (touch $my_base_dir/testfile &>/dev/null); then
+      print_info "System basedir set to $my_base_dir, unable to create temproot home dir in $my_base_dir. Trying /export/home/..."
+
+      if [ -d /export/home ] || (mkdir /export/home); then
+        if ! (touch /export/home/testfile &>/dev/null); then
+          print_red "Unable to touch /export/home/testfile"
+          exit 1
+        else
+          rm /export/home/testfile
+          HOME_DIR="/export/home/$USER"
+        fi
+      else
+        print_red "/export/home does not exist / unable to mkdir /export/home"
+        exit 1
+      fi
+    else
+        rm $my_base_dir/testfile
+        HOME_DIR="$my_base_dir/$USER"
+    fi
+
+    if (useradd -m -d $HOME_DIR -g 14 -u $USERID -s /bin/bash -c "$DESC" $USER); then
+      pass_gen
+    else
+      print_red "Faild to add $USER"
+      exit 1
+    fi
+
+  elif [ "$(uname)" == "AIX" ]; then
+    print_info "$(uname -sv) FOUND! Adding User..."
+
+    if (useradd -m -d $HOME_DIR -g usr -u $USERID -c "$DESC" $USER); then
+      pass_gen
+    else
+      print_red "Faild to add $USER"
+      exit 1
+    fi
+
+  else
+    print_red "Unsupported OS!: $(uname -a)"
+    exit 1
+  fi
+
+  ### ADD SUDO LINE ###
+
+  if ! (echo "$SUDOERS_FILE" | grep "10_$USER" &>/dev/null); then
+    if ! (cp -p $SUDOERS_FILE $SUDOERS_FILE.$(date +%Y%m%d)); then
+      print_red "Failed to backup $SUDOERS_FILE"
+      exit 1
+    else
+      echo "$SUDOERS_LINE" >> $SUDOERS_FILE
+    fi
+  else
+    echo "$SUDOERS_LINE" >> $SUDOERS_FILE
+  fi
+
+  chmod 0440 $SUDOERS_FILE
+
+  #ADD AT JOB: at now + $DAYS days
+  if ! (echo "sed /$USER/d $SUDOERS_FILE > $SUDOERS_FILE.tmp && chmod 0440 $SUDOERS_FILE.tmp && mv $SUDOERS_FILE.tmp $SUDOERS_FILE; userdel -r $USER; rm -rf $HOME_DIR" | at now + ${DAYS} days &>/dev/null); then
+    print_red "Faild to schedule an ATjob"
+  fi
+
+  print_usage
+}
+
+function rm_temproot() {
+
+  if [ -f /etc/passwd ]; then
+    if (grep temproot /etc/passwd &>/dev/null); then
+      HOME_DIR="$(grep temproot /etc/passwd | cut -d":" -f6)"
+    fi
+  fi
+
+  if (id $USER &>/dev/null); then
+    if ! (userdel -r $USER &>/dev/null); then
+      print_red "Failed to remove $USER user"
+      exit 1
+    else
+      print_green "Removed $USER"
+    fi
+  else
+    print_red "$USER user does not exist on this system"
+  fi
+
+  if [ -d $HOME_DIR ]; then
+    if ! (rm -rf $HOME_DIR); then
+      print_red "Failed to remove $HOME_DIR"
+    fi
+  fi
+
+  # REMOVE SUDO #
+  if (grep $USER $SUDOERS_FILE &>/dev/null); then
+    if ! (sed /$USER/d $SUDOERS_FILE > $SUDOERS_FILE.tmp && chmod 0440 $SUDOERS_FILE.tmp && mv $SUDOERS_FILE.tmp $SUDOERS_FILE &>/dev/null); then
+      print_red "Failed to modify $SUDOERS_FILE"
+    fi
+  fi
+
+  # REMOVE AT JOB #
+  if (grep -l $USER  $AT_DIR/* &>/dev/null); then
+    for TMPRATJOB in $(grep -l $USER  $AT_DIR/*)
+      do
+        if ! (rm $TMPRATJOB); then
+          print_red "Failed to remove ATJob"
+        fi
+      done
+  fi
+}
+
+function extend_temproot() {
+  # REMOVE AT JOB #
+  if ! (id $USER >&/dev/null); then
+    print_red "$USER user does not exist on this system"
+    exit 1
+  else
+    if (grep -l $USER  $AT_DIR/* &>/dev/null); then
+      for TMPRATJOB in $(grep -l $USER  $AT_DIR/*)
+        do
+          if ! (rm $TMPRATJOB); then
+            print_red "Failed to remove old Atjob"
+            exit 1
+          fi
+        done
+    fi
+
+    if [ -f /etc/passwd ]; then
+      HOME_DIR="$(grep temproot /etc/passwd | cut -d":" -f6)"
+    fi
+
+  #ADD AT JOB: at now + $DAYS days
+    if ! (echo "sed /$USER/d $SUDOERS_FILE > $SUDOERS_FILE.tmp && chmod 0440 $SUDOERS_FILE.tmp && mv $SUDOERS_FILE.tmp $SUDOERS_FILE; userdel -r $USER; rm -rf $HOME_DIR" | at now + $DAYS days &>/dev/null); then
+      print_red "Faild to schedule an ATjob"
+      exit 1
+    else
+      print_green "$USER extended for $DAYS days"
+    fi
+  fi
+}
+
+function validate_temproot() {
+
+  #CHECK TEMPROOT USER
+  print_info "Checking $USER user..."
+  if ! (id $USER 2>/dev/null); then
+    print_red "No $USER on this system"
+  fi
+
+  if [ "$(uname)" == "AIX" ]; then
+    grep -p $USER /etc/security/passwd
+  else
+    grep $USER /etc/shadow
+  fi
+
+  #CHECK SUDO
+  print_info "Checking sudoers file..."
+  if ! (grep $USER $SUDOERS_FILE 2>/dev/null); then
+    print_red "$USER is not in $SUDOERS_FILE"
+  fi
+
+  #CHECK AT JOB
+  print_info "Checking temproot cleanup ATJob(s)..."
+  if ! (grep -l $USER $AT_DIR/* 2>/dev/null); then
+    print_red "No $USER clean up ATjobs found"
+  fi
+}
+
+function print_help() {
+  print_info '''USAGE: ./temproot_3.0_beta.sh <option>
+
+        -t) <# of days> | Add temproot user for a period of days.
+        -p) <password>  | Define password for temproot user.
+        -v)             | Validate temproot user.
+        -r)             | Remove temproot user.
+        -e) <# of days> | Extend temproot user for a period of days.
+        -h)             | Display help.
+  '''
+}
+
+### MAIN ###
+
+# Options #
+while getopts ":t:p:e:vrh" OPT; do
+   case "$OPT" in
+      t)     OPTION="add"; DAYS=$OPTARG;;
+      p)     PASS=$OPTARG;;
+      v)     OPTION="validate";;
+      r)     OPTION="remove";;
+      e)     OPTION="extend"; DAYS=$OPTARG;;
+      h)     print_help; exit 0;;
+     \?)     print_red "Invalid option: -$OPTARG" >&2; exit 1;;
+      :)     print_red "Option -$OPTARG requires an argument." >&2; print_help; exit 1;;
+      "")    print_help;;
+   esac
+done
+
+# Is root? #
+if [ $UID != 0 ]; then
+   print_red "User has insufficient privileges. Must run as root."
+   exit 1
+fi
+
+# Solaris sudo pkg check #
+if [ "$(uname)" == "SunOS" ]; then
+  if ! pkginfo | grep -i sudo &>/dev/null; then
+    print_info "Unable to find sudo pkg installed. Please install sudo pkg and re-run the script. See http://unixpackages.int.thomsonreuters.com/ for details..."
+    exit 1
+  fi
+fi
+
+# AIX check - some AIX servers are missing the package but have sudo installed, so checking the path for "sudo" with the "which" command instead.
+if [ "$(uname)" == "AIX" ]; then
+  if ! ( which sudo ) > /dev/null 2>&1 ; then
+    print_info "Unable to find sudo using 'which sudo'. Please install sudo pkg and re-run the script."
+    exit 1
+  fi
+fi
+
+# ID sudoers file #
+if [ -f /etc/sudoers ]; then
+  if [ -d /etc/sudoers.d ] && (grep "^#includedir /etc/sudoers.d" /etc/sudoers &>/dev/null); then
+    SUDOERS_FILE="/etc/sudoers.d/10_$USER"
+  else
+    SUDOERS_FILE="/etc/sudoers"
+  fi
+
+elif [ -f /usr/local/etc/sudoers ]; then
+  if [ -d /usr/local/etc/sudoers.d ] && (grep "^#includedir /usr/local/etc/sudoers.d" /usr/local/etc/sudoers &>/dev/null) ; then
+    SUDOERS_FILE="/usr/local/etc/sudoers.d/10_$USER"
+  else
+    SUDOERS_FILE="/usr/local/etc/sudoers"
+  fi
+
+else
+  print_red "Unable to find sudoers file"
+  exit 1
+fi
+
+# ID ATjob dir #
+if [ -d  /var/spool/at/ ]; then
+  AT_DIR="/var/spool/at"
+elif [ -d  /var/spool/atjobs/ ]; then
+  AT_DIR="/var/spool/atjobs"
+elif [ -d /var/spool/cron/atjobs/ ]; then
+  AT_DIR="/var/spool/cron/atjobs"
+else
+  print_red "Failed to find ATjobs location"
+  exit 1
+fi
+
+# ADD option #
+if [ "$OPTION" == "add" ]; then
+  if ! (expr $DAYS + 0 &>/dev/null); then
+    print_red "Number has to be passed after -t option. MAX is 45 days!!!"
+    print_help
+    exit 1
+  else
+    if [ "$DAYS" -ge 46 ]; then
+      print_red "MAX is 45 Days!!!"
+      print_help
+      exit 1
+    fi
+  fi
+
+  if (id $USER &>/dev/null); then
+    print_red "$USER already exists..."
+    exit 1
+  fi
+
+  add_temproot
+  logger_entry added
+
+# REMOVE option #
+elif [ "$OPTION" == "remove" ]; then
+  if ! (who | grep $USER); then
+    rm_temproot
+    logger_entry removed
+  else
+    print_red "Open $USER session found..."
+    exit 1
+  fi
+
+# VALIDATE option #
+elif [ "$OPTION" == "validate" ]; then
+  validate_temproot
+
+# EXTEND option #
+elif [ "$OPTION" == "extend" ]; then
+  if ! (expr $DAYS + 0 &>/dev/null); then
+    print_red "Number has to be passed after -e option. MAX is 45 days!!!"
+    print_help
+    exit 1
+  elif [ "$DAYS" -ge 46 ]; then
+    print_red "MAX is 45 Days!!!"
+    print_help
+    exit 1
+  else
+    extend_temproot
+    logger_entry "extended for $DAYS days"
+  fi
+
+# NO option passed #
+else
+  print_help
+  exit 1
+fi
+
+exit 0
 

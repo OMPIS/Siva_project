@@ -31,7 +31,7 @@ def Generate_password(length=8):
 
 def Change_password(username, new_password, user_age):
     try:
-        subprocess.run(['passwd', username], input=f'{new_password}\n{new_password}\n', text=True, check=True)
+        subprocess.run(['passwd', username], input=f'{new_password}\n{new_password}\n', universal_newlines=True, check=True)
         subprocess.run(['chage', '-M', user_age, username], check=True)
         print(f"Password for user '{username}' changed successfully. {new_password}")
     except subprocess.CalledProcessError as e:
@@ -41,7 +41,7 @@ def Change_password(username, new_password, user_age):
 def Create_user(username, password, uid, gid, description, home_dir, user_age):
     try:
         subprocess.run(['useradd', '-u', str(uid), '-g', str(gid), '-d', home_dir, '-c', description, username], check=True)
-        subprocess.run(['chpasswd'], input=f'{username}:{password}', text=True, check=True)
+        subprocess.run(['chpasswd'], input=f'{username}:{password}', universal_newlines=True, check=True)
         subprocess.run(['chage', '-M', user_age, username], check=True)
         print(f"User '{username}' created successfully with UID {uid}, GID {gid}, and home directory '{home_dir}'.")
     except subprocess.CalledProcessError as e:

@@ -58,6 +58,24 @@ function add_temproot() {
   print_green "Password: $PASS"
 }
 
+# Main remove_temproot function
+function remove_temproot() {
+  # Check if the user exists
+  if id "$USER" &>/dev/null; then
+    # Remove the user and their home directory
+    userdel -r "$USER"
+    print_green "User $USER has been removed successfully."
+    
+    # Remove the sudoers file if it exists
+    if [ -f "$SUDOERS_FILE" ]; then
+      rm -f "$SUDOERS_FILE"
+      print_green "Sudoers entry for $USER removed."
+    fi
+  else
+    print_red "Error: User $USER does not exist."
+  fi
+}
+
 # MAIN ###
 
 # Initialize option variables
@@ -106,7 +124,7 @@ case "$OPTION" in
     # Call validation function (if implemented)
     ;;
   "remove")
-    # Call removal function (if implemented)
+    remove_temproot
     ;;
   "extend")
     # Call extension function (if implemented)

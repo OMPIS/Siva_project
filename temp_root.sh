@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
-# Original script information...
-
 USERID='67396'
 USER='temproot'
 GRPID='100'
 DESC='Temp Root User'
 HOME_DIR="/home/$USER"
-
 SUDOERS_LINE="temproot        ALL=(ALL) NOPASSWD:ALL"
-SUDOERS_FILE=""
+SUDOERS_FILE="/etc/sudoers.d/temproot"
 PASS=""
 
 # Colored output functions
@@ -41,9 +38,24 @@ function add_temproot() {
   # Ensure password is generated if not provided
   pass_gen
   
-  # Additional add logic...
-  print_info "Adding user $USER with a duration of $DAYS days and password: $PASS"
-  # Note: Code for adding the user, setting permissions, etc.
+  # Create the user with specified details
+  useradd -m -u "$USERID" -g "$GRPID" -d "$HOME_DIR" -s /bin/bash -c "$DESC" "$USER"
+  
+  # Set the password for the user
+  echo "$USER:$PASS" | chpasswd
+  
+  # Set the account expiration date based on DAYS
+  chage -E $(date -d "+$DAYS days" +%F) "$USER"
+  
+  # Create sudoers entry for temproot if it doesn’t exist
+  if [ ! -f "$SUDOERS_FILE" ]; then
+    echo "$SUDOERS_LINE" > "$SUDOERS_FILE"
+    chmod 440 "$SUDOERS_FILE"
+  fi
+
+  print_green "User $USER has been created with access for $DAYS days."
+  print_green "Username: $USER"
+  print_green "Password: $PASS"
 }
 
 # MAIN ###
@@ -88,17 +100,16 @@ case "$OPTION" in
       exit 1
     else
       add_temproot
-      # Add logging or any other action
     fi
     ;;
   "validate")
-    # Call validation function
+    # Call validation function (if implemented)
     ;;
   "remove")
-    # Call removal function
+    # Call removal function (if implemented)
     ;;
   "extend")
-    # Call extension function
+    # Call extension function (if implemented)
     ;;
   *)
     print_help

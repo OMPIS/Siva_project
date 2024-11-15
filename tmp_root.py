@@ -43,7 +43,7 @@ def Create_user(username, password, uid, gid, description, home_dir, user_age):
         subprocess.run(['useradd', '-u', str(uid), '-g', str(gid), '-d', home_dir, '-c', description, username], check=True)
         subprocess.run(['chpasswd'], input=f'{username}:{password}', universal_newlines=True, check=True)
         subprocess.run(['chage', '-M', user_age, username], check=True)
-        print(f"User '{username}' created successfully with UID {uid}, GID {gid}, and home directory '{home_dir}'.")
+        print(f"User '{username}'; Password: {password} created successfully with UID {uid}, GID {gid}, and home directory '{home_dir}'.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to create user: {e}")
 

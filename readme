@@ -42,7 +42,10 @@ remote comand
 OS validation
 
 
-
+adduser username_here && sleep 600 && usermod --lock username_here
+OR
+adduser username_here
+echo usermod --lock username_here | at now + 10 minutes
 
 
 
